@@ -1,6 +1,10 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
+# Add the backend directory to Python path
+backend_path = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+if backend_path not in sys.path:
+    sys.path.append(backend_path)
 
 from app.utils.database import init_database, run_migrations
 
