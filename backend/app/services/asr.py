@@ -130,8 +130,10 @@ class SomaliASR:
 asr_model = None
 
 def get_asr_model():
-    """Get singleton ASR model instance"""
+    """Get singleton ASR model instance (lazy loading)"""
     global asr_model
     if asr_model is None:
+        logger.info("Loading ASR model...")
         asr_model = SomaliASR()
+        logger.info("ASR model loaded successfully")
     return asr_model

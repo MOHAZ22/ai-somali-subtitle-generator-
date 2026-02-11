@@ -10,7 +10,15 @@ logger = logging.getLogger(__name__)
 
 class TranscriptionService:
     def __init__(self):
-        self.asr_model = get_asr_model()
+        # Don't load ASR model immediately - load it when needed
+        self.asr_model = None
+
+    def _get_asr_model(self):
+        """Lazy load ASR model when needed"""
+        if self.asr_model is None:
+            from app.services.asr import get_asr_model
+            self.asr_model = get_asr_model()
+        return self.asr_model
 
     def transcribe_media(self, db: Session, media_file_id: int, user_id: int) -> dict:
         """
@@ -31,7 +39,8 @@ class TranscriptionService:
             
             # Start transcription
             start_time = time.time()
-            result = self.asr_model.transcribe(media_file.file_path)
+            asr_model = self._get_asr_model()
+            result = asr_model.transcribe(media_file.file_path)
             processing_time = time.time() - start_time
             
             # Save transcription to database
